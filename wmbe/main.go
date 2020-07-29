@@ -43,6 +43,7 @@ func main() {
 	defer m.DBClose()
 
 	api.POST("/signup", controllers.CreateNewUserPost)
+	api.POST("/signin",controllers.ApproveUserSignIn)
 	// Our API will consit of just two routes
 	// /jokes - which will retrieve a list of jokes a user can see
 	// /jokes/like/:jokeID - which will capture likes sent to a particular joke
