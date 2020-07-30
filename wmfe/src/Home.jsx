@@ -1,4 +1,5 @@
 import React from 'react';
+import SignUp from './SignUp'
 
 class Home extends React.Component {
   constructor(props) {
@@ -6,7 +7,6 @@ class Home extends React.Component {
     this.state = {
       user: "",
       pwd: "",
-      authenticated_users:{"r":"r"},
     }
     this.handlePwdChange = this.handlePwdChange.bind(this);
     this.handleUserChange = this.handleUserChange.bind(this);
@@ -21,14 +21,31 @@ class Home extends React.Component {
     this.setState({pwd: event.target.value});
   }
 
+  SignInPosting() {
+      // create a new XMLHttpRequest
+      var xhr = new XMLHttpRequest()
+      console.log("Inside API Amigo")
+      // get a callback when the server responds
+      xhr.addEventListener('load', () => {
+        // update the state of the component with the result here
+        //xhr.responseText
+        if (xhr.status===200){
+          this.props.userNameChange(xhr.responseText)
+          this.props.loggedInStat(true)
+        }
+      })
+      // open the request with the verb and the url
+      xhr.open('POST', 'http://localhost:5000/api/signin')
+      xhr.send(JSON.stringify({
+        username: this.state.user,
+        password: this.state.pwd,
+      }))
+  }
+
   handleSubmit(event) {
-    if (this.state.authenticated_users[this.state.user]===this.state.pwd){
-        //send the info back to app to render LoggedIn
-        this.props.userNameChange(this.state.user)
-        this.props.loggedInStat(true)
-    } else {
-      console.log("GAWD HELP!!!")
-    }
+    //check with backend if authentication is correct
+    this.SignInPosting()
+    console.log("Here i gooo, weeeee....")
     event.preventDefault();
   }
 
@@ -53,6 +70,13 @@ class Home extends React.Component {
                 <input type="submit" value="Submit" />
               </form>
             </div>
+            <p>Not a user, sign up here mate!</p>
+              <div>
+                <SignUp
+                  userNameChange={this.props.userNameChange}
+                  loggedInStat={this.props.loggedInStat}
+                  />
+              </div>
           </div>
         </center>
       </div>

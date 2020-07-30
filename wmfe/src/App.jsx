@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import LoggedIn from './LoggedIn'
 import Home from './Home'
@@ -24,7 +23,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state.loggedIn)
     if (this.state.loggedIn) {
       return (
         <div style={{backgroundColor: 'red'}}>
