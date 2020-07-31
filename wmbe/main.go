@@ -8,22 +8,6 @@ import (
 	m "github.com/rajdesai5434/mah-cool-project/wmbe/models"
 )
 
-type Joke struct {
-	ID    int    `json:"id" binding:"required"`
-	Likes int    `json:"likes"`
-	Joke  string `json:"joke" binding:"required"`
-}
-
-// We'll create a list of jokes
-var jokes = []Joke{
-	Joke{1, 0, "Did you hear about the restaurant on the moon? Great food, no atmosphere."},
-	Joke{2, 0, "What do you call a fake noodle? An Impasta."},
-	Joke{3, 0, "How many apples grow on a tree? All of them."},
-	Joke{4, 0, "Want to hear a joke about paper? Nevermind it's tearable."},
-	Joke{5, 0, "I just watched a program about beavers. It was the best dam program I've ever seen."},
-	Joke{6, 0, "Why did the coffee file a police report? It got mugged."},
-	Joke{7, 0, "How does a penguin build it's house? Igloos it together."},
-}
 
 func main() {
 	// Set the router as the default one shipped with Gin
@@ -42,9 +26,17 @@ func main() {
 	m.ConnectToDB()
 	defer m.DBClose()
 
+	//sign.go
 	api.POST("/signup", controllers.CreateNewUserPost)
 	api.POST("/signin",controllers.ApproveUserSignIn)
-	api.GET("/wingmate",controllers.GetWingmateProfile)
+
+	//profile.go
+	api.GET("/wingmate_profile/:username",controllers.GetWingmateProfile)
+	api.POST("/wingmate_profile",controllers.PostWingmateProfile)
+	api.GET("/dater_profile/:username",controllers.GetDaterProfile)
+	api.POST("/dater_profile",controllers.PostDaterProfile)
+
+
 	//api.POST("/signin",controllers.ApproveUserSignIn)
 
 	// Our API will consit of just two routes
