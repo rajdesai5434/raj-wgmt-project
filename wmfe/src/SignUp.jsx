@@ -55,7 +55,8 @@ class SignUp extends React.Component {
         // update the state of the component with the result here
         //xhr.responseText
         if (xhr.status===200){
-          this.props.userNameChange(xhr.responseText)
+          var resp = JSON.parse(xhr.responseText);
+          this.props.userCreds(resp["msg"])
           this.props.loggedInStat(true)
         }
       })
