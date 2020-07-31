@@ -21,17 +21,20 @@ type createNewUser struct {
 type authenticateUser struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	AppUseStatus string `json:"appUseStatus"`
 }
 
 //CreateNewUserPost creates a new entry in db for a given username and email.
 func CreateNewUserPost(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	var input createNewUser
+	var successMsg = map[string]string{}
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if input.Username != "" && input.Password != "" && input.Email != "" && input.Fname != "" && input.Lname != "" {
+	if len(input.Username)>0 && len(input.Password)>0  && len(input.Email)>0 && len(input.Fname)>0 && len(input.Lname)>0 {
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 8)
 		if err!=nil{
@@ -50,7 +53,9 @@ func CreateNewUserPost(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
-			c.JSON(http.StatusOK, input.Username)
+			successMsg["username"]=input.Username
+			successMsg["appUseStatus"]=input.AppUseStatus
+			c.JSON(http.StatusOK, gin.H{"msg":successMsg})
 			return
 
 	}
@@ -60,8 +65,11 @@ func CreateNewUserPost(c *gin.Context) {
 
 //ApproveUserSignIn approves if the user exists and entered the right password
 func ApproveUserSignIn (c *gin.Context){
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	//c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	var input authenticateUser
 	var response = authenticateUser{}
+	var successMsg = map[string]string{}
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -69,8 +77,8 @@ func ApproveUserSignIn (c *gin.Context){
 
 	if len(input.Username)>0 && len(input.Password)>0{
 
-		sqlStatement := `Select password from user_profile where username=$1`
-		err := m.MyDB.QueryRow(sqlStatement, input.Username).Scan(&response.Password)
+		sqlStatement := `Select password, app_use_status from user_profile where username=$1`
+		err := m.MyDB.QueryRow(sqlStatement, input.Username).Scan(&response.Password,&response.AppUseStatus)
 		if err != nil{
 			if err == sql.ErrNoRows {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -86,7 +94,9 @@ func ApproveUserSignIn (c *gin.Context){
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, input.Username)
+	successMsg["username"]=input.Username
+	successMsg["appUseStatus"]=response.AppUseStatus
+	c.JSON(http.StatusOK, gin.H{"msg":successMsg})
 	return
 
 	}
