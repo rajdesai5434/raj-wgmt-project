@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/rajdesai5434/mah-cool-project/wmbe/controllers"
-	m "github.com/rajdesai5434/mah-cool-project/wmbe/models"
 )
 
+//SetupRouter sets up all the routes to various apis
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
 	api := router.Group("/api")
@@ -17,9 +17,6 @@ func SetupRouter() *gin.Engine {
 			 })
 		 })
 	 }
-
-	 m.ConnectToDB()
-	 defer m.DBClose()
 
 	 //sign.go
 	 api.POST("/signup", controllers.CreateNewUserPost)

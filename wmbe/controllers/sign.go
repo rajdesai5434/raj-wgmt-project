@@ -9,6 +9,8 @@ import (
 	m "github.com/rajdesai5434/mah-cool-project/wmbe/models"
 )
 
+var appUsePossibleState = []string{"dater","wing_mate","relative","other"}
+
 type createNewUser struct {
 	Username     string `json:"username"`
 	Password     string `json:"password"`
@@ -24,17 +26,28 @@ type authenticateUser struct {
 	AppUseStatus string `json:"appUseStatus"`
 }
 
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
+}
+
 //CreateNewUserPost creates a new entry in db for a given username and email.
 func CreateNewUserPost(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	var input createNewUser
-	var successMsg = map[string]string{}
+	var successMsg = make(map[string]interface{})
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	appUseVal := stringInSlice(input.AppUseStatus,appUsePossibleState)
 
-	if len(input.Username)>0 && len(input.Password)>0  && len(input.Email)>0 && len(input.Fname)>0 && len(input.Lname)>0 {
+	if (len(input.Username)>0 && len(input.Password)>0  && len(input.Email)>0 && len(input.Username)<=50 &&
+	 len(input.Password)<=255  && len(input.Email)<=255 && appUseVal){
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 8)
 		if err!=nil{
@@ -44,8 +57,16 @@ func CreateNewUserPost(c *gin.Context) {
 		}
 
 		sqlStatement := `
-		   INSERT INTO user_profile (username, password, first_name, last_name, email, app_use_status)
-		   VALUES ($1, $2, $3, $4, $5, $6)`
+		INSERT INTO user_profile (username, password, first_name, last_name, email, app_use_status)
+	  VALUES ($1, $2, $3, $4, $5, $6)
+	  ON CONFLICT (username)
+	  DO
+		 UPDATE SET
+			 password = EXCLUDED.password,
+			 first_name = EXCLUDED.first_name,
+			 last_name = EXCLUDED.last_name,
+			 email = EXCLUDED.email,
+			 app_use_status = EXCLUDED.app_use_status`
 
 			_, err = m.MyDB.Exec(sqlStatement, input.Username, string(hashedPassword), input.Fname, input.Lname, input.Email, input.AppUseStatus)
 			if err != nil {
@@ -59,7 +80,7 @@ func CreateNewUserPost(c *gin.Context) {
 			return
 
 	}
-	c.JSON(http.StatusBadRequest, gin.H{"error": "Missing Fields"})
+	c.JSON(http.StatusBadRequest, gin.H{"error": "Missing/Wrong Fields"})
 	return
 }
 
@@ -69,13 +90,13 @@ func ApproveUserSignIn (c *gin.Context){
 	//c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	var input authenticateUser
 	var response = authenticateUser{}
-	var successMsg = map[string]string{}
+	var successMsg = make(map[string]interface{})
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if len(input.Username)>0 && len(input.Password)>0{
+	if len(input.Username)>0 && len(input.Password)>0 && len(input.Username)<=50 && len(input.Password)<=255{
 
 		sqlStatement := `Select password, app_use_status from user_profile where username=$1`
 		err := m.MyDB.QueryRow(sqlStatement, input.Username).Scan(&response.Password,&response.AppUseStatus)
@@ -101,6 +122,6 @@ func ApproveUserSignIn (c *gin.Context){
 
 	}
 
-	c.JSON(http.StatusUnauthorized, gin.H{"error": "Empty Username or Password"})
+	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid username/password length"})
 	return
 }
