@@ -7,11 +7,16 @@ import (
    "testing"
    "github.com/gin-gonic/gin"
    "github.com/stretchr/testify/assert"
-   "io"
+   r "github.com/rajdesai5434/mah-cool-project/wmbe/routers"
+   //m "github.com/rajdesai5434/mah-cool-project/wmbe/models"
+   "bytes"
 )
 
-func PerformPostRequest(r http.Handler, method, path string, body io.Reader) *httptest.ResponseRecorder {
-   req, _ := http.NewRequest(method, path, body)
+var Router *gin.Engine
+
+func PerformPostRequest(r http.Handler, method, path string, body []byte) *httptest.ResponseRecorder {
+   req, _ := http.NewRequest(method, path, bytes.NewBuffer(body))
+   req.Header.Add("Content-Type", "application/json")
    w := httptest.NewRecorder()
    r.ServeHTTP(w, req)
    return w
@@ -24,14 +29,22 @@ func PerformGetRequest(r http.Handler, method, path string) *httptest.ResponseRe
    return w
 }
 
+//TestMain triggers all the tests
 func TestMain(t *testing.T){
+  //Connect to DB
+	//m.ConnectToDB()
+	//defer m.DBClose()
+  
+  Router = r.SetupRouter()
+
+}
+
+func TestFirst(t *testing.T){
   // Build our expected body
   body := gin.H{"message": "pong",}
 
-  router := SetupRouter()
-
   // Perform a GET request with that handler.
-  w := PerformGetRequest(router, "GET", "/api/")
+  w := PerformGetRequest(Router, "GET", "/api/")
 
   // Assert we encoded correctly,
   // the request gives a 200
