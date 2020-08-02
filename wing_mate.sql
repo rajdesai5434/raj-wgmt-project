@@ -1,11 +1,11 @@
 CREATE TABLE user_profile (
 	username VARCHAR ( 50 ) PRIMARY KEY,
 	password VARCHAR ( 255 ) NOT NULL,
-	first_name VARCHAR (50) NOT NULL,
-	last_name VARCHAR (50) NOT NULL,
+	first_name VARCHAR (50),
+	last_name VARCHAR (50),
 	email VARCHAR ( 255 ) UNIQUE NOT NULL,
-	app_use_status TEXT CHECK (app_use_status IN ('dater', 'wing_mate', 'relative','other')),
-	created_on timestamptz NOT NULL DEFAULT now()
+	app_use_status TEXT CHECK (app_use_status IN ('dater', 'wing_mate', 'relative','other')) NOT NULL,
+	last_modified_on timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE TABLE wing_profile (
