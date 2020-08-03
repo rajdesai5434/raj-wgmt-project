@@ -10,6 +10,7 @@ import (
    r "github.com/rajdesai5434/mah-cool-project/wmbe/routers"
    //m "github.com/rajdesai5434/mah-cool-project/wmbe/models"
    "bytes"
+   "log"
 )
 
 var Router *gin.Engine
@@ -22,8 +23,12 @@ func PerformPostRequest(r http.Handler, method, path string, body []byte) *httpt
    return w
 }
 
-func PerformGetRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {
+func PerformGetRequestSingleParam(r http.Handler, method, path, key, val string) *httptest.ResponseRecorder {
    req, _ := http.NewRequest(method, path, nil)
+   q := req.URL.Query()
+   q.Add(key, val)
+   req.URL.RawQuery = q.Encode()
+   log.Println(req.URL.String())
    w := httptest.NewRecorder()
    r.ServeHTTP(w, req)
    return w
@@ -34,7 +39,7 @@ func TestMain(t *testing.T){
   //Connect to DB
 	//m.ConnectToDB()
 	//defer m.DBClose()
-  
+
   Router = r.SetupRouter()
 
 }
@@ -44,7 +49,7 @@ func TestFirst(t *testing.T){
   body := gin.H{"message": "pong",}
 
   // Perform a GET request with that handler.
-  w := PerformGetRequest(Router, "GET", "/api/")
+  w := PerformGetRequestSingleParam(Router, "GET", "/api/", "", "")
 
   // Assert we encoded correctly,
   // the request gives a 200

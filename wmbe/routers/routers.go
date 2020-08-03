@@ -23,9 +23,9 @@ func SetupRouter() *gin.Engine {
 	 api.POST("/signin",controllers.ApproveUserSignIn)
 
 	 //profile.go
-	 api.GET("/wingmate_profile/:username",controllers.GetWingmateProfile)
+	 api.GET("/wingmate_profile",controllers.GetWingmateProfile)
 	 api.POST("/wingmate_profile",controllers.PostWingmateProfile)
-	 api.GET("/dater_profile/:username",controllers.GetDaterProfile)
+	 api.GET("/dater_profile",controllers.GetDaterProfile)
 	 api.POST("/dater_profile",controllers.PostDaterProfile)
 	 return router
 }

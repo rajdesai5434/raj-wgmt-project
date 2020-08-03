@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"database/sql"
 	m "github.com/rajdesai5434/mah-cool-project/wmbe/models"
+	p "github.com/rajdesai5434/mah-cool-project/wmbe/pkg"
 )
 
 var appUsePossibleState = []string{"dater","wing_mate","relative","other"}
@@ -26,15 +27,6 @@ type authenticateUser struct {
 	AppUseStatus string `json:"appUseStatus"`
 }
 
-func stringInSlice(a string, list []string) bool {
-    for _, b := range list {
-        if b == a {
-            return true
-        }
-    }
-    return false
-}
-
 //CreateNewUserPost creates a new entry in db for a given username and email.
 func CreateNewUserPost(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
@@ -44,7 +36,7 @@ func CreateNewUserPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	appUseVal := stringInSlice(input.AppUseStatus,appUsePossibleState)
+	appUseVal := p.StringInSlice(input.AppUseStatus,appUsePossibleState)
 
 	if (len(input.Username)>0 && len(input.Password)>0  && len(input.Email)>0 && len(input.Username)<=50 &&
 	 len(input.Password)<=255  && len(input.Email)<=255 && appUseVal){
