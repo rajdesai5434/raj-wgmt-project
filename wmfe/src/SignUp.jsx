@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form'
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -49,7 +51,6 @@ class SignUp extends React.Component {
   SignUpPosting() {
       // create a new XMLHttpRequest
       var xhr = new XMLHttpRequest()
-      console.log("Inside API Amigo")
       // get a callback when the server responds
       xhr.addEventListener('load', () => {
         // update the state of the component with the result here
@@ -76,12 +77,11 @@ class SignUp extends React.Component {
     //create a new entry in db
     //send usernameand loggedin stat back to the home page
     if (this.state.username && this.state.password && this.state.email && this.state.first_name && this.state.last_name){
-      console.log("Heading to api call... weeeeee....")
       this.SignUpPosting()
+      this.preventDefault()
     }else {
       console.log("GAWD HELP!!!")
     }
-    event.preventDefault();
   }
 
   render() {
@@ -92,33 +92,35 @@ class SignUp extends React.Component {
             <h1>WingMate SignUp</h1>
             <p>Alright Alright Alright, Lets Get you Signed Up Mates!!</p>
             <div>
-              <form onSubmit={this.handleSubmit}>
-                <label>
-                  Username:
-                  <input type="text" value={this.state.user} onChange={this.handleUserChange} />
-                </label>
-                <label>
-                  Password:
-                  <input type="password" value={this.state.pwd} onChange={this.handlePwdChange} />
-                </label>
-                <label>
-                  Email:
-                  <input type="text" value={this.state.user} onChange={this.handleEmailChange} />
-                </label>
-                <label>
-                  First Name:
-                  <input type="text" value={this.state.pwd} onChange={this.handleFNameChange} />
-                </label>
-                <label>
-                  Last Name:
-                  <input type="text" value={this.state.user} onChange={this.handleLNameChange} />
-                </label>
-                <label>
-                  App Use Status:
-                  <input type="text" value={this.state.user} onChange={this.handleAppUseChange} />
-                </label>
-                <input type="submit" value="Submit" />
-              </form>
+              <Form>
+                <Form.Group controlId="formGroupUsername">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control size="lg" type="text" value={this.state.username} onChange={this.handleUserChange} placeholder="Enter Username" />
+                </Form.Group>
+                <Form.Group controlId="formGroupPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control size="lg" type="password" value={this.state.password} onChange={this.handlePwdChange} placeholder="Password" />
+                </Form.Group>
+                <Form.Group controlId="formGroupEmail">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control size="lg" type="email" value={this.state.email} onChange={this.handleEmailChange} placeholder="Enter email" />
+                </Form.Group>
+                <Form.Group controlId="formGroupFname">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control size="lg" type="text" value={this.state.first_name} onChange={this.handleFNameChange} placeholder="First Name" />
+                </Form.Group>
+                <Form.Group controlId="formGroupLname">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control size="lg" type="text" value={this.state.last_name} onChange={this.handleLNameChange} placeholder="Last Name" />
+                </Form.Group>
+                <Form.Group controlId="formGroupPassword">
+                  <Form.Label>App Use Case?</Form.Label>
+                  <Form.Control size="lg" type="text" value={this.state.app_use_status} onChange={this.handleAppUseChange} placeholder="Enter either dater or wing_mate" />
+                </Form.Group>
+              </Form>
+              <div>
+                <Button variant="secondary" size="lg" onClick={this.handleSubmit}>Create Profile!!</Button>{' '}
+              </div>
             </div>
           </div>
         </center>

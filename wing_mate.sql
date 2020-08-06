@@ -30,3 +30,7 @@ CREATE TABLE dater_profile (
 	short_intro VARCHAR (255),
 	last_modified_on timestamptz NOT NULL DEFAULT now()
 );
+
+ALTER TABLE dater_profile (
+	ADD COLUMN gender_preference TEXT CHECK (gender_preference IN ('male', 'female','other')) NOT NULL DEFAULT 'other'
+);

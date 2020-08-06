@@ -1,5 +1,6 @@
 import React from 'react';
 import SignUp from './SignUp'
+import Button from 'react-bootstrap/Button';
 
 class Home extends React.Component {
   constructor(props) {
@@ -7,10 +8,12 @@ class Home extends React.Component {
     this.state = {
       user: "",
       pwd: "",
+      sign_up:false
     }
     this.handlePwdChange = this.handlePwdChange.bind(this);
     this.handleUserChange = this.handleUserChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onSignUpClick = this.onSignUpClick.bind(this);
   }
 
   handleUserChange(event) {
@@ -19,6 +22,13 @@ class Home extends React.Component {
 
   handlePwdChange(event) {
     this.setState({pwd: event.target.value});
+  }
+  
+  onSignUpClick(){
+    this.setState({
+      sign_up:true
+    })
+      
   }
 
   SignInPosting() {
@@ -46,42 +56,45 @@ class Home extends React.Component {
   handleSubmit(event) {
     //check with backend if authentication is correct
     this.SignInPosting()
-    console.log("Here i gooo, weeeee....")
     event.preventDefault();
   }
 
   render() {
-    return (
-      <div className="container">
-        <center>
-          <div className="col-xs-8 col-xs-offset-2 jumbotron text-center">
-            <h1>WingMate</h1>
-            <p>Help your friend get a Date!</p>
-            <p>Sign in to get access </p>
-            <div>
-              <form onSubmit={this.handleSubmit}>
-                <label>
-                  Username:
-                  <input type="text" value={this.state.user} onChange={this.handleUserChange} />
-                </label>
-                <label>
-                  Password:
-                  <input type="text" value={this.state.pwd} onChange={this.handlePwdChange} />
-                </label>
-                <input type="submit" value="Submit" />
-              </form>
-            </div>
-            <p>Not a user, sign up here mate!</p>
+    if (!this.state.sign_up){
+      return (
+        <div className="container">
+          <center>
+            <div className="col-xs-8 col-xs-offset-2 jumbotron text-center">
+              <h1>WingMate</h1>
+              <p>Help your friend get a Date!</p>
+              <p>Sign in to get access </p>
               <div>
-                <SignUp
-                  userCreds={this.props.userCreds}
-                  loggedInStat={this.props.loggedInStat}
-                  />
+                <form onSubmit={this.handleSubmit}>
+                  <label>
+                    Username:
+                    <input type="text" value={this.state.user} onChange={this.handleUserChange} />
+                  </label>
+                  <label>
+                    Password:
+                    <input type="text" value={this.state.pwd} onChange={this.handlePwdChange} />
+                  </label>
+                  <input type="submit" value="Submit" />
+                </form>
               </div>
-          </div>
-        </center>
-      </div>
-    )
+              <p>Not a user, join us!!</p>
+              <Button variant="secondary" size="lg" onClick={this.onSignUpClick}>Sign Up</Button>{' '}
+            </div>
+          </center>
+        </div>
+      )
+    }else{
+      return(
+      <SignUp
+        userCreds={this.props.userCreds}
+        loggedInStat={this.props.loggedInStat}
+        />
+      )
+    }
   }
 }
 

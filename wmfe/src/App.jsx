@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import LoggedIn from './LoggedIn'
+import WingMateLoggedIn from './WingMateLoggedIn'
+import DaterLoggedIn from './DaterLoggedIn'
 import Home from './Home'
 
 class App extends React.Component {
@@ -33,29 +34,17 @@ class App extends React.Component {
     if (this.state.loggedIn) {
       if (this.state.creds["appUseStatus"]==="dater"){
         return (
-          <div className="container">
-            <div className="col-lg-12">
-              <br />
-              <span className="pull-right"><a onClick={this.logout}>Log out</a></span>
-                <center>
-                  <h2>WingMate</h2>
-                  <p>Alright Alright Alright, lets get you started Dater!!</p>
-                </center>
-            </div>
-          </div>
+          <DaterLoggedIn
+            userCreds={this.state.creds}
+            loggedInStat={this.handleLoggedInStatus}
+            />
         )
       } else if (this.state.creds["appUseStatus"]==="wing_mate"){
         return (
-          <div className="container">
-            <div className="col-lg-12">
-              <br />
-              <span className="pull-right"><a onClick={this.logout}>Log out</a></span>
-                <center>
-                  <h2>WingMate</h2>
-                  <p>Alright Alright Alright, lets get you started mah Wing Mate!!</p>
-                </center>
-            </div>
-          </div>
+          <WingMateLoggedIn
+            userCreds={this.state.creds}
+            loggedInStat={this.handleLoggedInStatus}
+            />
         )
       } else {
         return (
