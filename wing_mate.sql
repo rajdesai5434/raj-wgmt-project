@@ -1,3 +1,5 @@
+CREATE DATABASE wing_mate
+
 CREATE TABLE user_profile (
 	username VARCHAR ( 50 ) PRIMARY KEY,
 	password VARCHAR ( 255 ) NOT NULL,
@@ -28,9 +30,6 @@ CREATE TABLE dater_profile (
 	employment_status VARCHAR (50),
 	study_college VARCHAR (255),
 	short_intro VARCHAR (255),
+	gender_preference TEXT CHECK (gender_preference IN ('male', 'female','other')) NOT NULL DEFAULT 'other',
 	last_modified_on timestamptz NOT NULL DEFAULT now()
-);
-
-ALTER TABLE dater_profile (
-	ADD COLUMN gender_preference TEXT CHECK (gender_preference IN ('male', 'female','other')) NOT NULL DEFAULT 'other'
 );
